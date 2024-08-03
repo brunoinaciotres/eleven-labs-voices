@@ -16,10 +16,7 @@ type Voice = {
 type VoicesListProps = {
     textAreaFilled: boolean
     textAreaValue: string | null
-    //generateCustomVoice: (voiceId: string)=> void
-    //customVoiceAudioSrc: string | null
-    //customVoiceId: string | null
-    //isLoadingCustomVoice: boolean
+ 
 }
 
 function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
