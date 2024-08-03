@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export async function POST(req: Request) {
-
+    
     try {
         const {text, voiceId} = await req.json()
         
@@ -12,6 +12,7 @@ export async function POST(req: Request) {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
                     "Accept": "audio/mpeg",
                     "xi-api-key": process.env.NEXT_PUBLIC_API_KEY
                 },
