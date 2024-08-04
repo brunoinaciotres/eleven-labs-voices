@@ -5,6 +5,7 @@ export async function POST(req: Request) {
     try {
         const { text, voiceId } = await req.json()
 
+
         const res = await axios.post(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
             {
                 text: text,
@@ -20,7 +21,6 @@ export async function POST(req: Request) {
         }
         )
 
-        console.log(res.headers)
         return new Response(res.data, {
             status: 200,
             headers: {
@@ -28,7 +28,6 @@ export async function POST(req: Request) {
                 'Access-Control-Allow-Origin': '*',
             }
         })
-
 
     } catch (e) {
         console.log(e)
