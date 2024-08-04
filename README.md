@@ -1,4 +1,4 @@
-##Atualmente este projeto pode não funcionar perfeitamente caso seu dispositivo seja um iPhone ou IOS.
+## Atualmente este projeto pode não funcionar perfeitamente caso seu dispositivo seja um iPhone ou IOS.
 
 
 ## Getting Started
