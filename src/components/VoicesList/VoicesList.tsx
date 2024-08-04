@@ -89,7 +89,7 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
 
     const uploadFile = async ( ) => {
         try {
-            const res = await fetch("http://localhost:3000/api/uploadFile", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/uploadFile`, {
                 method: "POST",
                 headers: {
                     'content-type': "audio/mpeg"
@@ -97,7 +97,6 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
                 body: generatedCustomVoice
             })
             const data = await res.json() as PutBlobResult
-            console.log(data)
             setCustomVoiceAudioSrc(data.url)
         } catch (e) {
             console.error("Error uploading file:", e);
