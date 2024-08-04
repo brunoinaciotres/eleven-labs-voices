@@ -19,9 +19,10 @@ export default function useRequestPost<T = unknown>() {
         try {
             const res = await axios.post(url, body, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'audio/mpeg'
                 },
-                responseType:'blob'
+                responseType:'arraybuffer'
             })
             
             setData(res.data as T)

@@ -13,8 +13,6 @@ export async function POST(req: Request) {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 "Accept": "audio/mpeg",
                 "xi-api-key": process.env.NEXT_PUBLIC_API_KEY
             },
@@ -22,14 +20,12 @@ export async function POST(req: Request) {
         }
         )
 
-        console.log(res.data)
+        console.log(res.headers)
         return new Response(res.data, {
             status: 200,
             headers: {
                 'Content-Type': 'audio/mpeg',
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization'
             }
         })
 
