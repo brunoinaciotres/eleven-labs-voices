@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import VoiceCard from "../VoiceCard/VoiceCard"
 import useRequest from "@/hooks/useRequest"
 import useRequestPost from "@/hooks/useRequestPost"
+import type { PutBlobResult } from '@vercel/blob';
 
 type Voice = {
     voice_id: string
@@ -22,11 +23,12 @@ type VoicesListProps = {
 function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
 
     const { data: voices, isLoading } = useRequest<Voice[]>(`${process.env.NEXT_PUBLIC_API_URL}/getVoices`)
-    const { data: generatedCustomVoice, sendPostRequest, isLoading: isLoadingCustomVoice } = useRequestPost<File>()
+    const { data: generatedCustomVoice, sendPostRequest } = useRequestPost<File>()
     const [customVoiceAudioSrc, setCustomVoiceAudioSrc] = useState<string | null>(null);
     const [customVoiceId, setCustomVoiceId] = useState<string | null>(null)
     const [lastVoiceAudio, setLastVoiceAudio] = useState<HTMLAudioElement | null>(null)
     const [currentVoiceId, setCurrentVoiceId] = useState<string | null>(null)
+    const [isLoadingCustomVoice, setIsLoadingCustomVoice] = useState<boolean>(false);
 
     const playAudio = (voiceId: string) => {
         const voiceAudio: HTMLAudioElement | null = document.querySelector(`#preview-${voiceId}`) as HTMLAudioElement | null
@@ -54,7 +56,6 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
 
     const pauseAudio = (voiceId: string) => {
         const voiceAudio: HTMLAudioElement | null = document.querySelector(`#preview-${voiceId}`) as HTMLAudioElement | null
-        const voiceLi: Element | null = document.querySelector(`#voice-li-${voiceId}`)
         if (voiceAudio) voiceAudio.pause()
         hidePauseButton(voiceId)
 
@@ -75,6 +76,7 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
     }
 
     const generateCustomVoice = async (voiceId: string) => {
+        setIsLoadingCustomVoice(true)
         if (!textAreaValue || !voiceId) return
         setCustomVoiceId(voiceId)
 
@@ -85,26 +87,35 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
 
     }
 
-    useEffect(() => {
-        let url: string | null = null;
-
-        if (generatedCustomVoice) {
-            url = URL.createObjectURL(generatedCustomVoice);
-            setCustomVoiceAudioSrc(url);
+    const uploadFile = async ( ) => {
+        try {
+            const res = await fetch("http://localhost:3000/api/uploadFile", {
+                method: "POST",
+                headers: {
+                    'content-type': "audio/mpeg"
+                },
+                body: generatedCustomVoice
+            })
+            const data = await res.json() as PutBlobResult
+            console.log(data)
+            setCustomVoiceAudioSrc(data.url)
+        } catch (e) {
+            console.error("Error uploading file:", e);
         }
+        
+    }
+
+    useEffect(() => {
+        
+        if (generatedCustomVoice) uploadFile()
 
         const customAudio = document.querySelector<HTMLAudioElement>(`#custom-voice-${customVoiceId}`)
 
         customAudio?.addEventListener('canplaythrough', () => {
+            setIsLoadingCustomVoice(false)
             customAudio?.play();
         })
 
-        //liberar memoria
-        return () => {
-            if (url) {
-                URL.revokeObjectURL(url);
-            }
-        };
 
     }, [generatedCustomVoice])
 

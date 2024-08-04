@@ -1,5 +1,6 @@
 "use client"
 
+import type { PutBlobResult } from '@vercel/blob';
 import Header from "@/components/Header/Header";
 import VoicesList from "@/components/VoicesList/VoicesList";
 
@@ -9,6 +10,7 @@ export default function Home() {
 
   const [textAreaFilled, setTextAreaFilled] = useState<boolean>(false)
   const [textAreaValue, setTextAreaValue] = useState<string | null>(null)
+
 
   const handleUserInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value) {
