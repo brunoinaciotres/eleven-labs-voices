@@ -93,9 +93,7 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
                 method: "POST",
                 headers: {
                     'content-type': "audio/mpeg",
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                    'Access-Control-Allow-Origin': '*'
                 },
                 body: generatedCustomVoice
             })
