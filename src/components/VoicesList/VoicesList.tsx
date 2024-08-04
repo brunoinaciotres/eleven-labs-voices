@@ -17,7 +17,7 @@ type Voice = {
 type VoicesListProps = {
     textAreaFilled: boolean
     textAreaValue: string | null
- 
+
 }
 
 function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
@@ -87,12 +87,15 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
 
     }
 
-    const uploadFile = async ( ) => {
+    const uploadFile = async () => {
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/uploadFile`, {
                 method: "POST",
                 headers: {
-                    'content-type': "audio/mpeg"
+                    'content-type': "audio/mpeg",
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 },
                 body: generatedCustomVoice
             })
@@ -101,11 +104,11 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
         } catch (e) {
             console.error("Error uploading file:", e);
         }
-        
+
     }
 
     useEffect(() => {
-        
+
         if (generatedCustomVoice) uploadFile()
 
         const customAudio = document.querySelector<HTMLAudioElement>(`#custom-voice-${customVoiceId}`)
