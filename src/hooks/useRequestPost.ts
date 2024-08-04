@@ -22,7 +22,7 @@ export default function useRequestPost<T = unknown>() {
                     'Content-Type': 'application/json',
                     'Accept': 'audio/mpeg'
                 },
-                responseType:'blob'
+                responseType:'arraybuffer'
             })
             
             setData(res.data as T)

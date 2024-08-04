@@ -17,9 +17,10 @@ export async function POST(req: Request) {
                 "Accept": "audio/mpeg",
                 "xi-api-key": process.env.NEXT_PUBLIC_API_KEY
             },
-            responseType: 'arraybuffer'
+            responseType:'arraybuffer'
         }
         )
+       
 
         return new Response(res.data, {
             status: 200,
