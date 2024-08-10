@@ -11,9 +11,10 @@ type FilterOptions = {
 
 type FilterPropsList = {
     filterOptions: FilterOptions
+    applyFilters: (obj: FilterOptions) => void
 }
 
-function Filtro({filterOptions}: FilterPropsList) {
+function Filtro({ filterOptions, applyFilters }: FilterPropsList) {
     const [genderValue, setGenderValue] = useState<string | null>(null)
     const [ageValue, setAgeValue] = useState<string | null>(null)
     const [useCaseValue, setUseCaseValue] = useState<string | null>(null)
@@ -26,9 +27,39 @@ function Filtro({filterOptions}: FilterPropsList) {
         setUseCaseValue(null)
         setAccentValue(null)
         setCategoryValue(null)
-        
+
     }
-    
+
+    useEffect(() => {
+        const filterObj = {
+            genders: [] as string[],
+            ages: [] as string[],
+            useCases: [] as string[],
+            accents: [] as string[],
+            categories:[] as string[]
+        }
+
+        if (genderValue && !filterObj.genders.includes(genderValue)) {
+            filterObj.genders.push(genderValue)
+        }
+        if (useCaseValue && !filterObj.genders.includes(useCaseValue)) {
+            filterObj.useCases.push(useCaseValue)
+        }
+        if (accentValue && !filterObj.genders.includes(accentValue)) {
+            filterObj.accents.push(accentValue)
+        }
+
+        if (ageValue && !filterObj.genders.includes(ageValue)) {
+            filterObj.ages.push(ageValue)
+        }
+
+        if (categoryValue && !filterObj.genders.includes(categoryValue)) {
+            filterObj.categories.push(categoryValue)
+        }
+
+        applyFilters(filterObj)
+    }, [genderValue, ageValue, useCaseValue, accentValue, categoryValue])
+
 
     return (
         <>
@@ -71,7 +102,7 @@ function Filtro({filterOptions}: FilterPropsList) {
                             placeholder="Filter by Accent"
                             data={filterOptions.accents}
                             clearable
-                            comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } , shadow: 'md'}}
+                            comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 }, shadow: 'md' }}
                             variant="filled"
                             aria-label="Filtrar Sotaque"
                             w={150}

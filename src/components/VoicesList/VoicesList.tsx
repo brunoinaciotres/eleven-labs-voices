@@ -1,11 +1,8 @@
 import "./VoicesList.css"
 import { useEffect, useState } from "react"
-import VoiceCard from "../VoiceCard/VoiceCard"
-import useRequest from "@/hooks/useRequest"
 import useRequestPost from "@/hooks/useRequestPost"
 import type { PutBlobResult } from '@vercel/blob';
 import VoiceCardMantine from "../VoiceCard/VoiceCardMantine"
-import useReduceVoices from "@/hooks/useReduceVoices"
 import useAudioControls  from "@/hooks/useAudioControls"
 
 type Voice = {
@@ -28,13 +25,11 @@ function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading }: Voices
 
     
     const { data: generatedCustomVoice, sendPostRequest } = useRequestPost<File>()
+    const { playAudio, pauseAudio } = useAudioControls()
 
     const [customVoiceAudioSrc, setCustomVoiceAudioSrc] = useState<string | null>(null);
     const [customVoiceId, setCustomVoiceId] = useState<string | null>(null)
-    // const [lastVoiceAudio, setLastVoiceAudio] = useState<HTMLAudioElement | null>(null)
-    // const [currentVoiceId, setCurrentVoiceId] = useState<string | null>(null)
     const [isLoadingCustomVoice, setIsLoadingCustomVoice] = useState<boolean>(false);
-    const { playAudio, pauseAudio } = useAudioControls()
 
     const generateCustomVoice = async (voiceId: string) => {
         setIsLoadingCustomVoice(true)
@@ -90,7 +85,8 @@ function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading }: Voices
                         <div className="spinner"></div>
                     </>
                 )
-                : voices?.map(voice => {
+                : (voices.length != 0 ? voices.map(voice => {
+                
                     return (
                         <VoiceCardMantine
                         textAreaFilled={textAreaFilled}
@@ -104,7 +100,7 @@ function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading }: Voices
                         isLoadingCustomVoice={isLoadingCustomVoice}
                         />
                     )
-                })}
+                }): "Não há vozes")}
 
         </ul>
     );

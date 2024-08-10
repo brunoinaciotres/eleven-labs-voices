@@ -30,6 +30,40 @@ export default function Home() {
   const [textAreaFilled, setTextAreaFilled] = useState<boolean>(false)
   const [textAreaValue, setTextAreaValue] = useState<string | null>(null)
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null)
+  const [voicesFiltered, setVoicesFiltered] = useState<Voice[] | null>(null)
+
+  const normalizeValue = (value: string): string => {
+    if (!value) return '';
+    return value
+        .toLowerCase()
+        .replace(/[^a-z0-9]/gi, ' ') // Substituir caracteres especiais por espaço
+        .trim()
+        .replace(/\s+/g, ' ') // Substituir múltiplos espaços por um único espaço
+        .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizar a primeira letra de cada palavra
+}
+
+const applyFilters = (obj: FilterOptions) => {
+    const voicesFiltered = voices?.filter(voice => {
+    const { gender, accent, use_case, age } = voice.labels;
+    const formattedGender = normalizeValue(gender);
+    const formattedAccent = normalizeValue(accent);
+    const formattedUseCase = normalizeValue(use_case);
+    const formattedAge = normalizeValue(age);
+    const formattedCategory = normalizeValue(voice.category);
+
+    const matchesGender = !obj.genders.length || obj.genders.includes(formattedGender);
+    const matchesUseCase = !obj.useCases.length || obj.useCases.includes(formattedUseCase);
+    const matchesAge = !obj.ages.length || obj.ages.includes(formattedAge);
+    const matchesCategory = !obj.categories.length || obj.categories.includes(formattedCategory);
+    const matchesAccent = !obj.accents.length || obj.accents.includes(formattedAccent);
+
+    
+    return matchesGender && matchesUseCase && matchesAge && matchesCategory && matchesAccent;
+  });
+
+
+  setVoicesFiltered(voicesFiltered || null)
+}
 
   useEffect(()=> {
     if (voices){
@@ -61,9 +95,9 @@ export default function Home() {
               placeholder="Digite seu texto para transformar em voz"
               w={{ base: 300, xs: 500, sm: 700, md: 700, lg: 700 }}
               mb={32}
-
             />
-            {filterOptions && <Filtro filterOptions={filterOptions} />}
+
+            {filterOptions && <Filtro applyFilters={applyFilters} filterOptions={filterOptions} />}
             
           </section>
         </Container>
@@ -71,7 +105,7 @@ export default function Home() {
           <VoicesList
             textAreaFilled={textAreaFilled}
             textAreaValue={textAreaValue}
-            voices={voices ?? []}
+            voices={voicesFiltered ?? []}
             isLoading={isLoading}
           />
         </section>
