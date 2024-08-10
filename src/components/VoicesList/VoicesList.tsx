@@ -6,6 +6,7 @@ import useRequestPost from "@/hooks/useRequestPost"
 import type { PutBlobResult } from '@vercel/blob';
 import VoiceCardMantine from "../VoiceCard/VoiceCardMantine"
 import useReduceVoices from "@/hooks/useReduceVoices"
+import useAudioControls  from "@/hooks/useAudioControls"
 
 type Voice = {
     voice_id: string
@@ -30,57 +31,10 @@ function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading }: Voices
 
     const [customVoiceAudioSrc, setCustomVoiceAudioSrc] = useState<string | null>(null);
     const [customVoiceId, setCustomVoiceId] = useState<string | null>(null)
-    const [lastVoiceAudio, setLastVoiceAudio] = useState<HTMLAudioElement | null>(null)
-    const [currentVoiceId, setCurrentVoiceId] = useState<string | null>(null)
+    // const [lastVoiceAudio, setLastVoiceAudio] = useState<HTMLAudioElement | null>(null)
+    // const [currentVoiceId, setCurrentVoiceId] = useState<string | null>(null)
     const [isLoadingCustomVoice, setIsLoadingCustomVoice] = useState<boolean>(false);
-
-
-   
-
-    const playAudio = (voiceId: string) => {
-        const voiceAudio: HTMLAudioElement | null = document.querySelector(`#preview-${voiceId}`) as HTMLAudioElement | null
-        if (voiceAudio) {
-
-            if (lastVoiceAudio && lastVoiceAudio != voiceAudio) {
-                lastVoiceAudio.pause()
-                lastVoiceAudio.currentTime = 0
-                currentVoiceId && hidePauseButton(currentVoiceId)
-            }
-
-            voiceAudio.play()
-
-            setLastVoiceAudio(voiceAudio)
-            setCurrentVoiceId(voiceId)
-            showPauseButton(voiceId)
-
-
-            voiceAudio.addEventListener('ended', () => {
-                hidePauseButton(voiceId)
-
-            }, { once: true });
-        }
-    }
-
-    const pauseAudio = (voiceId: string) => {
-        const voiceAudio: HTMLAudioElement | null = document.querySelector(`#preview-${voiceId}`) as HTMLAudioElement | null
-        if (voiceAudio) voiceAudio.pause()
-        hidePauseButton(voiceId)
-
-    }
-
-    const showPauseButton = (voiceId: string) => {
-        const playAudioButton = document.querySelector(`#audio-play-${voiceId}`)
-        const pauseAudioButton = document.querySelector(`#audio-pause-${voiceId}`)
-        playAudioButton?.classList.add("d-none")
-        pauseAudioButton?.classList.remove("d-none")
-    }
-
-    const hidePauseButton = (voiceId: string) => {
-        const playAudioButton = document.querySelector(`#audio-play-${voiceId}`)
-        const pauseAudioButton = document.querySelector(`#audio-pause-${voiceId}`)
-        playAudioButton?.classList.remove("d-none")
-        pauseAudioButton?.classList.add("d-none")
-    }
+    const { playAudio, pauseAudio } = useAudioControls()
 
     const generateCustomVoice = async (voiceId: string) => {
         setIsLoadingCustomVoice(true)
