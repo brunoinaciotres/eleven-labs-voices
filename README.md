@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Atualmente este projeto pode não funcionar perfeitamente caso seu dispositivo seja um iPhone ou IOS.
+## Link: https://eleven-labs-voices-1.vercel.app/
 
 ## Getting Started
 
