@@ -10,12 +10,14 @@ body {
 }
 
 main {
-  padding-top:230px;
+  padding-top:80px;
 }
 
 .text-blue {
-  color:#007BFF;
+  color:#007BFF  !important;
 }
+
+
 
 .d-none {
   display: none !important;
@@ -27,20 +29,17 @@ main {
 
 .disabled {
   pointer-events: none;
-  color: #9b9b9b;
+  color: #9b9b9b !important;
 }
 
 .text-input-section {
-  height:150px;
-  background-color: #DADADA;
-  box-shadow:1px 1px 4px #00000030;
+  padding:1.5rem 0;
+  background-color: #fff;
   width:100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;
-  top: 80px;
   z-index:2;
 }
 

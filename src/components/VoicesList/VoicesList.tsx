@@ -4,31 +4,38 @@ import VoiceCard from "../VoiceCard/VoiceCard"
 import useRequest from "@/hooks/useRequest"
 import useRequestPost from "@/hooks/useRequestPost"
 import type { PutBlobResult } from '@vercel/blob';
+import VoiceCardMantine from "../VoiceCard/VoiceCardMantine"
+import useReduceVoices from "@/hooks/useReduceVoices"
 
 type Voice = {
     voice_id: string
     name: string
     category: string
-    labels: object
+    labels: Record<string, string>
     description: string
     preview_url: string
-}
+  }
 
 type VoicesListProps = {
     textAreaFilled: boolean
     textAreaValue: string | null
-
+    isLoading: boolean
+    voices: Voice[] 
 }
 
-function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
+function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading }: VoicesListProps) {
 
-    const { data: voices, isLoading } = useRequest<Voice[]>(`${process.env.NEXT_PUBLIC_API_URL}/getVoices`)
+    
     const { data: generatedCustomVoice, sendPostRequest } = useRequestPost<File>()
+
     const [customVoiceAudioSrc, setCustomVoiceAudioSrc] = useState<string | null>(null);
     const [customVoiceId, setCustomVoiceId] = useState<string | null>(null)
     const [lastVoiceAudio, setLastVoiceAudio] = useState<HTMLAudioElement | null>(null)
     const [currentVoiceId, setCurrentVoiceId] = useState<string | null>(null)
     const [isLoadingCustomVoice, setIsLoadingCustomVoice] = useState<boolean>(false);
+
+
+   
 
     const playAudio = (voiceId: string) => {
         const voiceAudio: HTMLAudioElement | null = document.querySelector(`#preview-${voiceId}`) as HTMLAudioElement | null
@@ -131,16 +138,16 @@ function VoicesList({ textAreaFilled, textAreaValue }: VoicesListProps) {
                 )
                 : voices?.map(voice => {
                     return (
-                        <VoiceCard
-                            textAreaFilled={textAreaFilled}
-                            voice={voice}
-                            key={voice.voice_id}
-                            playAudio={playAudio}
-                            pauseAudio={pauseAudio}
-                            generateCustomVoice={generateCustomVoice}
-                            customVoiceAudioSrc={customVoiceAudioSrc}
-                            customVoiceId={customVoiceId}
-                            isLoadingCustomVoice={isLoadingCustomVoice}
+                        <VoiceCardMantine
+                        textAreaFilled={textAreaFilled}
+                        voice={voice}
+                        key={voice.voice_id}
+                        playAudio={playAudio}
+                        pauseAudio={pauseAudio}
+                        generateCustomVoice={generateCustomVoice}
+                        customVoiceAudioSrc={customVoiceAudioSrc}
+                        customVoiceId={customVoiceId}
+                        isLoadingCustomVoice={isLoadingCustomVoice}
                         />
                     )
                 })}

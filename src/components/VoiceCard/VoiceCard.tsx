@@ -1,4 +1,5 @@
 import "./VoiceCard.css"
+import { Card, Text, Badge } from '@mantine/core';
 
 type Voice = {
     voice_id: string
@@ -24,11 +25,14 @@ type VoiceCardProps = {
 function VoiceCard({ voice, playAudio, pauseAudio, textAreaFilled, generateCustomVoice, customVoiceAudioSrc, customVoiceId, isLoadingCustomVoice }: VoiceCardProps) {
 
     return (
+
+
+
         <li id={`voice-li-${voice.voice_id}`} className="voice-li">
             <audio id={`preview-${voice.voice_id}`} src={voice.preview_url} />
 
             {customVoiceId === voice.voice_id && (
-                <audio id={`custom-voice-${voice.voice_id}`} src={customVoiceAudioSrc ? customVoiceAudioSrc : undefined }   />
+                <audio id={`custom-voice-${voice.voice_id}`} src={customVoiceAudioSrc ? customVoiceAudioSrc : undefined} />
             )}
 
             <div className="voice-li-top">
@@ -43,7 +47,7 @@ function VoiceCard({ voice, playAudio, pauseAudio, textAreaFilled, generateCusto
                 </div>
                 <div className="layout-div play-button-container">
                     <div className={`play-group ${textAreaFilled ? null : 'd-none'}`}>
-                        <span className={isLoadingCustomVoice  && customVoiceId != voice.voice_id ? "disabled" : "text-blue"}>Ouvir meu texto</span>
+                        <span className={isLoadingCustomVoice && customVoiceId != voice.voice_id ? "disabled" : "text-blue"}>Ouvir meu texto</span>
 
                         {isLoadingCustomVoice && customVoiceId === voice.voice_id ?
                             <div className="spinner blue"></div> :
@@ -105,6 +109,7 @@ function VoiceCard({ voice, playAudio, pauseAudio, textAreaFilled, generateCusto
                 </ul>
             </div>
         </li>
+
     );
 }
 
