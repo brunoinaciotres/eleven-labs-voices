@@ -3,7 +3,15 @@ import { useEffect, useState } from "react"
 import useRequestPost from "@/hooks/useRequestPost"
 import type { PutBlobResult } from '@vercel/blob';
 import VoiceCardMantine from "../VoiceCard/VoiceCardMantine"
-import useAudioControls  from "@/hooks/useAudioControls"
+import useAudioControls from "@/hooks/useAudioControls"
+
+type FilterOptions = {
+    genders: string[];
+    ages: string[];
+    useCases: string[];
+    accents: string[];
+    categories: string[];
+}
 
 type Voice = {
     voice_id: string
@@ -12,18 +20,19 @@ type Voice = {
     labels: Record<string, string>
     description: string
     preview_url: string
-  }
+}
 
 type VoicesListProps = {
     textAreaFilled: boolean
     textAreaValue: string | null
     isLoading: boolean
-    voices: Voice[] 
+    voices: Voice[]
+    filtersApplied: FilterOptions | null
 }
 
-function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading }: VoicesListProps) {
+function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading, filtersApplied }: VoicesListProps) {
 
-    
+
     const { data: generatedCustomVoice, sendPostRequest } = useRequestPost<File>()
     const { playAudio, pauseAudio } = useAudioControls()
 
@@ -86,21 +95,22 @@ function VoicesList({ textAreaFilled, textAreaValue, voices, isLoading }: Voices
                     </>
                 )
                 : (voices.length != 0 ? voices.map(voice => {
-                
+
                     return (
                         <VoiceCardMantine
-                        textAreaFilled={textAreaFilled}
-                        voice={voice}
-                        key={voice.voice_id}
-                        playAudio={playAudio}
-                        pauseAudio={pauseAudio}
-                        generateCustomVoice={generateCustomVoice}
-                        customVoiceAudioSrc={customVoiceAudioSrc}
-                        customVoiceId={customVoiceId}
-                        isLoadingCustomVoice={isLoadingCustomVoice}
+                            filtersApplied={filtersApplied}
+                            textAreaFilled={textAreaFilled}
+                            voice={voice}
+                            key={voice.voice_id}
+                            playAudio={playAudio}
+                            pauseAudio={pauseAudio}
+                            generateCustomVoice={generateCustomVoice}
+                            customVoiceAudioSrc={customVoiceAudioSrc}
+                            customVoiceId={customVoiceId}
+                            isLoadingCustomVoice={isLoadingCustomVoice}
                         />
                     )
-                }): "Não há vozes")}
+                }) : "Não há vozes")}
 
         </ul>
     );

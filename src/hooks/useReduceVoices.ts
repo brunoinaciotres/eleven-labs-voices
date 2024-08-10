@@ -1,3 +1,5 @@
+import useFormatLabels from "./useFormatLabels"
+
 type Voice = {
     voice_id: string
     category: string
@@ -12,15 +14,6 @@ type FilterOptions = {
     categories: string[];
 }
 
-const normalizeValue = (value: string): string => {
-    if (!value) return '';
-    return value
-        .toLowerCase()
-        .replace(/[^a-z0-9]/gi, ' ') // Substituir caracteres especiais por espaço
-        .trim()
-        .replace(/\s+/g, ' ') // Substituir múltiplos espaços por um único espaço
-        .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizar a primeira letra de cada palavra
-}
 
 export default function useReduceVoices(voices: Voice[]): FilterOptions {
 
@@ -28,11 +21,11 @@ export default function useReduceVoices(voices: Voice[]): FilterOptions {
 
         const { gender, accent, use_case, age } = voice.labels
 
-        const normalizedGender = normalizeValue(gender)
-        const normalizedAccent = normalizeValue(accent)
-        const normalizedUseCase = normalizeValue(use_case)
-        const normalizedAge = normalizeValue(age)
-        const normalizedCategory = normalizeValue(voice.category)
+        const normalizedGender = useFormatLabels(gender)
+        const normalizedAccent = useFormatLabels(accent)
+        const normalizedUseCase = useFormatLabels(use_case)
+        const normalizedAge = useFormatLabels(age)
+        const normalizedCategory = useFormatLabels(voice.category)
 
 
         if (normalizedGender && !optionsObj.genders.includes(normalizedGender)) {

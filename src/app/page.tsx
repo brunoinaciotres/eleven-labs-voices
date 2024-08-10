@@ -2,6 +2,7 @@
 import Filtro from "@/components/Filtro/Filtro";
 import Header from "@/components/Header/Header";
 import VoicesList from "@/components/VoicesList/VoicesList"
+import useFormatLabels from "@/hooks/useFormatLabels";
 import useReduceVoices from "@/hooks/useReduceVoices";
 import useRequest from "@/hooks/useRequest";
 import { Textarea, Text, Container } from '@mantine/core'
@@ -31,47 +32,49 @@ export default function Home() {
   const [textAreaValue, setTextAreaValue] = useState<string | null>(null)
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null)
   const [voicesFiltered, setVoicesFiltered] = useState<Voice[] | null>(null)
+  const [filtersApplied, setFiltersApplied] = useState<FilterOptions | null>(null)
 
-  const normalizeValue = (value: string): string => {
-    if (!value) return '';
-    return value
-        .toLowerCase()
-        .replace(/[^a-z0-9]/gi, ' ') // Substituir caracteres especiais por espaço
-        .trim()
-        .replace(/\s+/g, ' ') // Substituir múltiplos espaços por um único espaço
-        .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizar a primeira letra de cada palavra
-}
+  // const normalizeValue = (value: string): string => {
+  //   if (!value) return '';
+  //   return value
+  //     .toLowerCase()
+  //     .replace(/[^a-z0-9]/gi, ' ') // Substituir caracteres especiais por espaço
+  //     .trim()
+  //     .replace(/\s+/g, ' ') // Substituir múltiplos espaços por um único espaço
+  //     .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizar a primeira letra de cada palavra
+  // }
 
-const applyFilters = (obj: FilterOptions) => {
+  const applyFilters = (obj: FilterOptions) => {
     const voicesFiltered = voices?.filter(voice => {
-    const { gender, accent, use_case, age } = voice.labels;
-    const formattedGender = normalizeValue(gender);
-    const formattedAccent = normalizeValue(accent);
-    const formattedUseCase = normalizeValue(use_case);
-    const formattedAge = normalizeValue(age);
-    const formattedCategory = normalizeValue(voice.category);
+      const { gender, accent, use_case, age } = voice.labels;
+      const formattedGender = useFormatLabels(gender);
+      const formattedAccent = useFormatLabels(accent);
+      const formattedUseCase = useFormatLabels(use_case);
+      const formattedAge = useFormatLabels(age);
+      const formattedCategory = useFormatLabels(voice.category);
 
-    const matchesGender = !obj.genders.length || obj.genders.includes(formattedGender);
-    const matchesUseCase = !obj.useCases.length || obj.useCases.includes(formattedUseCase);
-    const matchesAge = !obj.ages.length || obj.ages.includes(formattedAge);
-    const matchesCategory = !obj.categories.length || obj.categories.includes(formattedCategory);
-    const matchesAccent = !obj.accents.length || obj.accents.includes(formattedAccent);
-
-    
-    return matchesGender && matchesUseCase && matchesAge && matchesCategory && matchesAccent;
-  });
+      const matchesGender = !obj.genders.length || obj.genders.includes(formattedGender);
+      const matchesUseCase = !obj.useCases.length || obj.useCases.includes(formattedUseCase);
+      const matchesAge = !obj.ages.length || obj.ages.includes(formattedAge);
+      const matchesCategory = !obj.categories.length || obj.categories.includes(formattedCategory);
+      const matchesAccent = !obj.accents.length || obj.accents.includes(formattedAccent);
 
 
-  setVoicesFiltered(voicesFiltered || null)
-}
+      return matchesGender && matchesUseCase && matchesAge && matchesCategory && matchesAccent;
+    });
 
-  useEffect(()=> {
-    if (voices){
-        const options = useReduceVoices(voices)
-        setFilterOptions(options)
+
+    setVoicesFiltered(voicesFiltered || null)
+    setFiltersApplied(obj)
+  }
+
+  useEffect(() => {
+    if (voices) {
+      const options = useReduceVoices(voices)
+      setFilterOptions(options)
     }
-    
-}, [voices])
+
+  }, [voices])
 
   const handleUserInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value) {
@@ -98,11 +101,12 @@ const applyFilters = (obj: FilterOptions) => {
             />
 
             {filterOptions && <Filtro applyFilters={applyFilters} filterOptions={filterOptions} />}
-            
+
           </section>
         </Container>
         <section className="voice-list-section">
           <VoicesList
+            filtersApplied={filtersApplied}
             textAreaFilled={textAreaFilled}
             textAreaValue={textAreaValue}
             voices={voicesFiltered ?? []}

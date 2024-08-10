@@ -1,3 +1,4 @@
+import useFormatLabels from '@/hooks/useFormatLabels';
 import { Card, Text, Badge, Group, Stack } from '@mantine/core';
 
 type Voice = {
@@ -7,9 +8,15 @@ type Voice = {
     labels: object
     description: string
     preview_url: string
-};
+}
 
-
+type FilterOptions = {
+    genders: string[];
+    ages: string[];
+    useCases: string[];
+    accents: string[];
+    categories: string[];
+}
 type VoiceCardProps = {
     voice: Voice
     playAudio: (voiceId: string) => void
@@ -19,9 +26,10 @@ type VoiceCardProps = {
     customVoiceAudioSrc: string | null
     customVoiceId: string | null
     isLoadingCustomVoice: boolean
+    filtersApplied: FilterOptions | null
 }
 
-function VoiceCardMantine({ voice, playAudio, pauseAudio, textAreaFilled, generateCustomVoice, customVoiceAudioSrc, customVoiceId, isLoadingCustomVoice }: VoiceCardProps) {
+function VoiceCardMantine({ voice, playAudio, pauseAudio, textAreaFilled, generateCustomVoice, customVoiceAudioSrc, customVoiceId, isLoadingCustomVoice, filtersApplied }: VoiceCardProps) {
     return (
         <Card w={{ base: 300, xs: 500, sm: 700, md: 700, lg: 700 }} shadow="sm" padding="lg" radius="md" withBorder>
             <Stack>
@@ -89,7 +97,17 @@ function VoiceCardMantine({ voice, playAudio, pauseAudio, textAreaFilled, genera
                 <Group wrap='wrap' mt="sm">
                     {
                         Object.values(voice.labels).map((label, index) => {
-                            return (
+                            const formattedLabel = useFormatLabels(label)
+                            
+                            const isFilteredOut = 
+                                filtersApplied?.accents.includes(formattedLabel) ||
+                                filtersApplied?.genders.includes(formattedLabel) ||
+                                filtersApplied?.useCases.includes(formattedLabel) ||
+                                filtersApplied?.ages.includes(formattedLabel)
+
+                            
+                            return !isFilteredOut && (
+                                
                                 <Badge key={index} color="blue" >{label.charAt(0).toUpperCase() + label.slice(1).toLowerCase()}</Badge>
                             )
                         })
