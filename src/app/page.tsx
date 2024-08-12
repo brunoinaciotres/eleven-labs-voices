@@ -34,16 +34,6 @@ export default function Home() {
   const [voicesFiltered, setVoicesFiltered] = useState<Voice[] | null>(null)
   const [filtersApplied, setFiltersApplied] = useState<FilterOptions | null>(null)
 
-  // const normalizeValue = (value: string): string => {
-  //   if (!value) return '';
-  //   return value
-  //     .toLowerCase()
-  //     .replace(/[^a-z0-9]/gi, ' ') // Substituir caracteres especiais por espaço
-  //     .trim()
-  //     .replace(/\s+/g, ' ') // Substituir múltiplos espaços por um único espaço
-  //     .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizar a primeira letra de cada palavra
-  // }
-
   const applyFilters = (obj: FilterOptions) => {
     const voicesFiltered = voices?.filter(voice => {
       const { gender, accent, use_case, age } = voice.labels;
